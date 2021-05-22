@@ -21,12 +21,11 @@
 
 
 module cap_test
+    import project_pkg::*;
     #(parameter WIDTH = 640,
-      parameter HEIGTH = 480,
-            
+      parameter HEIGTH = 480,          
       parameter V_B_Porch = 120,
       parameter V_F_Porch = 100,
-      
       parameter H_B_Porch = 120,
       parameter H_F_Porch = 200)
       
@@ -36,22 +35,6 @@ module cap_test
     input  logic [15:0] m_axis_tdata
     );
     timeunit 1ns/1ns;
-   
-  logic [15:0] arry [WIDTH + V_B_Porch + V_F_Porch][HEIGTH + H_B_Porch + H_F_Porch];
-  logic [31:0] framegen_pix,framegen_line;
-  time period = 10ns;
-  
-  logic err_tlast_flag = 0;
-  logic [15:0] last_cnt, line_no, tuser_cnt = 0;
-  
-  logic [15:0] compared_in[HEIGTH*WIDTH], compared_out[HEIGTH*WIDTH];
-  logic [31:0] diff_compared = 0;
-  logic [15:0] tvalid_cnt, succeed_line_valid_cnt = 0;
-  
-  int videoin_ind, streamout_ind = 0;
-  
-  logic [15:0] temp_frame_line = 0;
-  
   
   initial begin
   @(posedge pclk);
@@ -59,9 +42,15 @@ module cap_test
     FV = 0;
     LV = 0;
     diff_compared = 0;
+    err_tlast_flag = 0;
     line_no  = 0;
     last_cnt = 0; 
     tuser_cnt = 0;
+    tvalid_cnt = 0;
+    succeed_line_valid_cnt = 0;
+    videoin_ind = 0;
+    streamout_ind = 0;
+    temp_frame_line = 0;
     #100ns;
     
 //    frame_generator();
@@ -229,13 +218,6 @@ function test_tlast_signal();
         end
     end
 endfunction
-    
-   
-//  // test clocks
-//  initial begin
-//    pclk <= 0;
-//    forever #5ns pclk = ~pclk;
-//  end
     
 //  function void frame_generator();
 //  //assigning random value to elements
