@@ -19,36 +19,24 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module top_cap
-    #(parameter WIDTH = 480,
-      parameter HEIGTH = 640,
-      
-      parameter H_B_Porch = 120,
-      parameter H_F_Porch = 200,
-      
-      parameter V_B_Porch = 120,
-      parameter V_F_Porch = 100)();
-      
-  timeunit 1ns/1ns;
+module top_cap();
+
+    timeunit 1ns/1ns;
+    import project_pkg::*;
+
+    logic pclk;
   
-  logic resetn, pclk, FV, LV, 
-        m_axis_tvalid, m_axis_tready,
-        m_axis_tuser, m_aclk, m_axis_tlast;
-  logic [15:0] D_IN, m_axis_tdata;
-  
-  
-//  cap_capsule dut (.D_IN(D_IN), .pclk(pclk), .resetn(resetn),
-//                 .FV(FV), .LV(LV), .m_axis_tready(m_axis_tready),
-//                 .m_axis_tvalid(m_axis_tvalid), .m_axis_tuser(m_axis_tuser),
-//                 .m_aclk(m_aclk), .m_axis_tlast(m_axis_tlast),
-//                 .m_axis_tdata(m_axis_tdata)); 
-  dahua_cap dut (.D_IN(D_IN), .pclk(pclk), .resetn(resetn),
+  dahua_cap 
+    #(.WIDTH(WIDTH), .HEIGTH(HEIGTH))
+            dut (.D_IN(D_IN), .pclk(pclk), .resetn(resetn),
                  .FV(FV), .LV(LV), .m_axis_tready(m_axis_tready),
                  .m_axis_tvalid(m_axis_tvalid), .m_axis_tuser(m_axis_tuser),
                  .m_aclk(m_aclk), .m_axis_tlast(m_axis_tlast),
                  .m_axis_tdata(m_axis_tdata)); 
   
-  cap_test  tb (.D_IN(D_IN), .pclk(pclk), .resetn(resetn),
+  cap_test  
+    #(.WIDTH(WIDTH), .HEIGTH(HEIGTH), .V_B_Porch(V_B_Porch), .V_F_Porch(V_F_Porch), .H_B_Porch(H_B_Porch), .H_F_Porch(H_F_Porch))
+             tb (.D_IN(D_IN), .pclk(pclk), .resetn(resetn),
                  .FV(FV), .LV(LV), .m_axis_tready(m_axis_tready),
                  .m_axis_tvalid(m_axis_tvalid), .m_axis_tuser(m_axis_tuser),
                  .m_aclk(m_aclk), .m_axis_tlast(m_axis_tlast),
